@@ -1,3 +1,18 @@
+// Parameters
+let downsample = 2; // pixels / sample (Gitterpunkt)
+let maxPot = 100 * 1000; // maximum Potential
+let omega = 1.9; // Improves convergency speed
+let maxerror = 0.1; // lasterror < maxerror -> done
+
+function createStructures() {
+  // Defines the sturctures present in simulation
+  Rects.push(new Rect(new Vector(-5, 5), new Vector(5, -5), maxPot)); //Positively charged metal
+  Rects.push(new Rect(new Vector(30, 20), new Vector(35, 2), 0)); // Neutral metal
+  Rects.push(new Rect(new Vector(30, -2), new Vector(35, -20), 0)); //Neutral metal
+}
+
+//----------------------------------------------------------
+
 class Vector {
   constructor (x, y) {
     this.x = x;
@@ -27,17 +42,11 @@ let scale = 50;
 let origin = new Vector(0, 0); //From where to draw the vectors (rel in canvas) [px]
 let center = new Vector(15, 0); //Center in the viewed space [1]
 
-// Parameters
-let downsample = 2; // pixels / sample (Gitterpunkt)
-let maxPot = 100 * 1000; // maximum Potential
-let omega = 1.2; // Improves convergency speed
-
 let Vectors = [];
 let Rects = [];
 let iterations = 0;
 let errors = [];
 let lasterror = 0; // Maximum error in this iteration
-let maxerror = 0.1; // lasterror < maxerror -> done
 
 window.onload = () => { // Entry point. DOM is loaded from here
   var canvas = document.getElementById("canvas");
@@ -67,7 +76,7 @@ function update () {
     setText('drawing', 'Done.');
   } else {
     errors.push([iterations, lasterror]);
-    //Flotr.draw(document.getElementById('plot'), [ errors ], { yaxis: { min: 0, max: 40000}})
+    Flotr.draw(document.getElementById('plot'), [ errors ], { yaxis: { min: 0, max: 40000}})
     lasterror = 0;
     setTimeout( () => update(), 1); // Recalculate the potential as fast as possible
   }
@@ -80,12 +89,6 @@ function draw (ctx) {
   setTimeout( () => draw(ctx), 800); // Only draw to screen every 800ms
 }
 
-function createStructures() {
-  // Defines the sturctures present in simulation
-  Rects.push(new Rect(new Vector(-5, 5), new Vector(5, -5), maxPot)); //Positively charged metal
-  Rects.push(new Rect(new Vector(30, 20), new Vector(35, 2), 0)); // Neutral metal
-  Rects.push(new Rect(new Vector(30, -2), new Vector(35, -20), 0)); //Neutral metal
-}
 
 function calculatePot(vec, x, y) {
 
@@ -100,7 +103,6 @@ function calculatePot(vec, x, y) {
   if (matched) return;
 
   // calculate the new potential. The iteration order guarantees correct indices
-
   let pot1 = (x == horPixels-1) ? 0 : Vectors[x + 1][y].potential;
   let pot2 = (x == 0) ? 0 : Vectors[x - 1][y].potential;
 
@@ -140,10 +142,10 @@ function map (array2d, fn) {
 function setText (id, text) { document.getElementById(id).innerHTML = text; }
 
 function drawVector (ctx, vec, x, y) {
+  // Calculate the heatmap color for this potential
+  // Hue from 0(red) to 250(blue) and Brightness exp. from 0 to 40%
   let potScale = (vec.potential / maxPot);
-
   let potExp = Math.exp(-1 / (potScale * 200));
-
   ctx.fillStyle = 'hsl('+ (1- potScale) * 250 +', 100%, '+ potExp * 40 +'%)';
   // Draw a rectangle (respective of previous downsampling)
   ctx.fillRect(origin.x + x * downsample, origin.y + y * downsample, downsample, downsample);
