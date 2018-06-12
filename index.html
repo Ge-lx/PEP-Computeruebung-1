@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Laplace - Iterative simulation</title>
+  <!-- Used for graphs -->
+  <script type="text/javascript" src="http://www.humblesoftware.com/static/js/flotr2.min.js"></script>
+  <script src="./pep2.js"></script>
+  <style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  #header {
+    width: 100%;
+    height: 30px;
+    background-color: orange;
+    padding: 5px;
+    box-shadow: 0px 1px 5px -1px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+  }
+
+  #header > p {
+    color: white;
+    font-size: 25px;
+    font-weight: lighter;
+    margin: 0px;
+  }
+
+  #main {
+    margin: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+
+  #canvas_holder {
+    position: relative;
+    margin: 20px;
+    width: 800px;
+    height: 500px;
+    margin-bottom: 50px;
+  }
+
+  .scale {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .scale > p {
+    margin: 0;
+  }
+
+  .scale.hor {
+    bottom: 0;
+    margin-bottom: -25px;
+    width: 100%;
+    flex-flow: row nowrap;
+  }
+
+  .scale.vert {
+    left: 0;
+    margin-left: -28px;
+    height: 100%;
+    flex-flow: column wrap;
+    align-items: flex-end;
+  }
+
+  #stats {
+    padding: 10px;
+  }
+
+  #plot {
+    width: 800px;
+    height: 300px;
+  }
+
+  </style>
+</head>
+<body>
+  <div id='header'>
+    <p>Numberical Laplace computation</p>
+  </div>
+  <div id='main'>
+    <div id='stats'>
+      <h2 id='drawing'></h2>
+      <p id='iter'></p>
+      <p id='delta'></p>
+    </div>
+    <div id='canvas_holder'>
+      <div class='scale hor'>
+        <p>-10</p> <p>0</p> <p>10</p> <p>20</p> <p>30</p> <p>40</p>
+      </div>
+      <div class='scale vert'>
+        <p>20</p>
+        <p>10</p>
+        <p>0</p>
+        <p>-10</p>
+        <p>-20</p>
+      </div>
+      <canvas id="canvas" width="800px" height="500px"></canvas>  
+    </div>
+    <p>Graph of the maximum error over time</p>
+    <div id='plot'></div>
+  </div>
+</body>
+</html>
